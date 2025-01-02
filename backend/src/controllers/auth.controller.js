@@ -1,5 +1,4 @@
-import User from "../models/user.model";
-import User from "../models/user.model";
+import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 export const signup = async (req, res) => {
     const{fullName, email, password} = req.body;
@@ -21,7 +20,7 @@ export const signup = async (req, res) => {
         });
         if (newUser) {
             // generate JWT token
-            
+
         }
         else {
             return res.status(400).json({message: "User creation failed"});
