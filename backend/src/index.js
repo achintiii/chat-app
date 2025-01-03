@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.route.js";
+import messageRoutes from "./routes/message.route.js";
 import { connectDB } from "./lib/db.js";
 import cookieParser from "cookie-parser";
 
@@ -17,6 +18,7 @@ app.use(cookieParser()); // To parse cookies
 
 // API Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/message", messageRoutes);
 app.get("/", (req, res) => {
   res.send("Hello, MERN stack backend!");
 });
