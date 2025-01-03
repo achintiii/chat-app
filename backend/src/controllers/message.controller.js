@@ -30,7 +30,7 @@ export const getMessages = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 }
-export const sendMesssage = async (req, res) => {
+export const sendMessage = async (req, res) => {
     try {
         const {text, image} = req.body;
         const {id: receiverId} = req.params;
