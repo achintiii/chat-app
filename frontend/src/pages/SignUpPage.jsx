@@ -41,6 +41,35 @@ const SignUpPage = () => {
 
             {/* Right Side - Form Section */}
             <div className="flex flex-col justify-center items-center p-6 sm:p-12">
+                <div classname = "w-full max-w-md space-y-8">
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text text-base font-medium">
+                                    Name
+                                </span>
+                            </label>
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            </div>
+                            <input
+                                type = "name"
+                                className = "input input-bordered w-full pl-10"
+                                placeholder="Enter your name"
+                                value={formData.name}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        name: e.target.value,
+                                    })
+                                }
+                            />
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
                 <div className="w-full max-w-md space-y-8">
                     {/* Form */}
                     <form onSubmit={handleSubmit} className="space-y-6">
