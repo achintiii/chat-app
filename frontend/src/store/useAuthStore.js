@@ -23,7 +23,7 @@ export const useAuthStore = create((set) => ({
         }
     },
 
-    // Signup function (stubbed for now)
+    // Signup function
     signup: async (formData) => {
         set({ isSigningUp: true });
         try {
@@ -37,28 +37,47 @@ export const useAuthStore = create((set) => ({
             set({ isSigningUp: false });
         }
     },
-    logout: async (data) => {
+
+    // Login function
+    login: async (formData) => {
+        set({ isLoggingIn: true });
+        try {
+            const res = await axiosInstance.post("http://localhost:5001/api/auth/login", formData);
+            set({ authUser: res.data });
+            toast.success("Logged in successfully!");
+        } catch (error) {
+            console.error("Error during login:", error);
+            toast.error("Invalid email or password. Please try again.");
+        } finally {
+            set({ isLoggingIn: false });
+        }
+    },
+
+    // Logout function
+    logout: async () => {
         try {
             await axiosInstance.post("http://localhost:5001/api/auth/logout");
             set({ authUser: null });
             toast.success("Logged out successfully!");
         } catch (error) {
-            toast.error("Error during logout:");
+            console.error("Error during logout:", error);
+            toast.error("Error during logout");
         }
     },
-    login: async (formData) => {
+
+    // Update profile
+    updateProfile: async (data) => {
+        set({ isUpdatingProfile: true });
         try {
-            set({ isLoggingIn: true });
-            const res = await axiosInstance.post("http://localhost:5001/api/auth/login", formData);
+            const res = await axiosInstance.put("http://localhost:5001/api/auth/update", data);
             set({ authUser: res.data });
-            toast.success("Logged in successfully!");
-        }
-        catch (error) {
-            console.error("Error during login:", error);
-            toast.error("Error during login");
-        }
-        finally {
-            set({ isLoggingIn: false });
+            toast.success("Profile updated successfully");
+            await useAuthStore.getState().checkAuth(); // Re-fetch updated user data
+        } catch (error) {
+            console.error("Error updating profile:", error);
+            toast.error("Error updating profile");
+        } finally {
+            set({ isUpdatingProfile: false });
         }
     },
 }));
