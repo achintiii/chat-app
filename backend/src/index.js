@@ -20,7 +20,7 @@ app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
 // API Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/message", messageRoutes);
+app.use("/api/messages", messageRoutes);
 app.get("/", (req, res) => {
   res.send("Hello, MERN stack backend!");
 });
