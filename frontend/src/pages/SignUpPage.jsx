@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
-import { MessageSquare, Mail} from "lucide-react";
+import { MessageSquare, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const SignUpPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
+        fullName: "",
         email: "",
         password: "",
     });
@@ -13,12 +15,36 @@ const SignUpPage = () => {
     const { signup, isSignUp } = useAuthStore();
 
     const validateForm = () => {
-        return formData.email.length > 0 && formData.password.length > 0;
+        let isValid = true;
+
+        if (!formData.fullName.trim()) {
+            toast.error("Name is required");
+            isValid = false;
+        }
+        if (!formData.email.trim()) {
+            toast.error("Email is required");
+            isValid = false;
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            toast.error("Email is invalid");
+            isValid = false;
+        }
+        if (!formData.password.trim()) {
+            toast.error("Password is required");
+            isValid = false;
+        } else if (formData.password.length < 6) {
+            toast.error("Password must be at least 6 characters");
+            isValid = false;
+        }
+
+        return isValid;
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        signup(formData);
+        const success = validateForm();
+        if (success) {
+            signup(formData);
+        }
     };
 
     return (
@@ -41,44 +67,33 @@ const SignUpPage = () => {
 
             {/* Right Side - Form Section */}
             <div className="flex flex-col justify-center items-center p-6 sm:p-12">
-                <div classname = "w-full max-w-md space-y-8">
+                <div className="w-full max-w-md space-y-8">
                     <form onSubmit={handleSubmit} className="space-y-6">
+                        {/* Name Input */}
                         <div className="form-control">
                             <label className="label">
-                                <span className="label-text text-base font-medium">
-                                    Name
-                                </span>
+                                <span className="label-text text-base font-medium">Name</span>
                             </label>
                             <div className="relative">
-                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <input
+                                    type="text"
+                                    className="input input-bordered w-full"
+                                    placeholder="Enter your name"
+                                    value={formData.fullName}
+                                    onChange={(e) =>
+                                        setFormData({
+                                            ...formData,
+                                            fullName: e.target.value,
+                                        })
+                                    }
+                                />
                             </div>
-                            <input
-                                type = "name"
-                                className = "input input-bordered w-full pl-10"
-                                placeholder="Enter your name"
-                                value={formData.name}
-                                onChange={(e) =>
-                                    setFormData({
-                                        ...formData,
-                                        name: e.target.value,
-                                    })
-                                }
-                            />
                         </div>
-                    </div>
-                </form>
-            </div>
 
-
-                <div className="w-full max-w-md space-y-8">
-                    {/* Form */}
-                    <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Email Input */}
                         <div className="form-control">
                             <label className="label">
-                                <span className="label-text text-base font-medium">
-                                    Email Address
-                                </span>
+                                <span className="label-text text-base font-medium">Email Address</span>
                             </label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -102,9 +117,7 @@ const SignUpPage = () => {
                         {/* Password Input */}
                         <div className="form-control">
                             <label className="label">
-                                <span className="label-text text-base font-medium">
-                                    Password
-                                </span>
+                                <span className="label-text text-base font-medium">Password</span>
                             </label>
                             <div className="relative">
                                 <input
@@ -131,23 +144,19 @@ const SignUpPage = () => {
 
                         {/* Submit Button */}
                         <div className="form-control mt-6">
-                            <button
-                                type="submit"
-                                disabled={!validateForm()}
-                                className="btn btn-primary w-full"
-                            >
+                            <button type="submit" className="btn btn-primary w-full">
                                 Sign Up
                             </button>
                         </div>
                     </form>
-                    <div className = "text-center">
+                    <div className="text-center">
                         <p className="text-base-content/60">
                             Already have an account?{" "}
-                            <Link to ="/login" className="text-primary">
+                            <Link to="/login" className="text-primary hover:underline">
                                 Sign in
                             </Link>
                         </p>
-                        </div>
+                    </div>
                 </div>
             </div>
         </div>

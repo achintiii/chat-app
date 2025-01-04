@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
+import {toast} from "react-hot-toast";
 
 export const useAuthStore = create((set) => ({
     authUser: null,
@@ -26,13 +27,38 @@ export const useAuthStore = create((set) => ({
     signup: async (formData) => {
         set({ isSigningUp: true });
         try {
-            const response = await axiosInstance.post("http://localhost:5001/api/auth/signup", formData);
-            set({ authUser: response.data });
-            console.log("Signup successful", response.data);
+            const res = await axiosInstance.post("http://localhost:5001/api/auth/signup", formData);
+            toast.success("Account created successfully!");
+            set({ authUser: res.data });
         } catch (error) {
             console.error("Error during signup:", error);
+            toast.error("Error during signup");
         } finally {
             set({ isSigningUp: false });
+        }
+    },
+    logout: async (data) => {
+        try {
+            await axiosInstance.post("http://localhost:5001/api/auth/logout");
+            set({ authUser: null });
+            toast.success("Logged out successfully!");
+        } catch (error) {
+            toast.error("Error during logout:");
+        }
+    },
+    login: async (formData) => {
+        try {
+            set({ isLoggingIn: true });
+            const res = await axiosInstance.post("http://localhost:5001/api/auth/login", formData);
+            set({ authUser: res.data });
+            toast.success("Logged in successfully!");
+        }
+        catch (error) {
+            console.error("Error during login:", error);
+            toast.error("Error during login");
+        }
+        finally {
+            set({ isLoggingIn: false });
         }
     },
 }));
