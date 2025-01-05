@@ -18,45 +18,53 @@ export const getUsersForSidebar = async (req, res) => {
 
 export const getMessages = async (req, res) => {
     try {
-        const {id: userToChatID} = req.params;
-        const myId = req.user._id;
+        const { id: userToChatID } = req.params; // ID of the user being chatted with
+        const myId = req.user._id; // ID of the logged-in user
+
+
         const messages = await Message.find({
             $or: [
-                { senderId, receiverId: myId },
-                { senderId: myId, receiverId: senderId },
+                { senderId: myId, receiverId: userToChatID },
+                { senderId: userToChatID, receiverId: myId },
             ],
         })
-        res.status(200).json({ messages });
 
-    }
-    catch (error) {
-        console.log("Error in getting messages");
+        res.status(200).json(messages);
+    } catch (error) {
+        console.error("Error in getting messages:", error);
         res.status(500).json({ message: "Internal server error" });
     }
-}
+};
+
 export const sendMessage = async (req, res) => {
     try {
-        const {text, image} = req.body;
-        const {id: receiverId} = req.params;
-        const senderId = req.user._id;
-        let imageUrl;
+        const { text, image } = req.body;
+        const { id: receiverId } = req.params;
+        const senderId = req.user?._id;
+
+        let imageUrl = null;
         if (image) {
-            const uploadResponse = await cloudinary.uploader.upload(image);
-            imageUrl = uploadResponse.secure_url;
+            try {
+                const uploadResponse = await cloudinary.uploader.upload(image);
+                imageUrl = uploadResponse.secure_url;
+            } catch (uploadError) {
+                console.error("Error uploading image:", uploadError);
+                return res.status(500).json({ message: "Failed to upload image" });
+            }
         }
+
         const newMessage = new Message({
-            senderId,
+            senderId, 
             receiverId,
             text,
             image: imageUrl,
         });
 
         await newMessage.save();
-        // todo: Real time functionality goes here with socket.io
-        res.status(201).json({ newMessage});
-    }
-    catch (error) {
-        console.log("Error in sending message");
+        res.status(201).json(newMessage);
+    } catch (error) {
+        console.error("Error in sending message:", error);
         res.status(500).json({ message: "Internal server error" });
     }
-}
+};
+
