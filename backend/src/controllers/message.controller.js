@@ -3,15 +3,19 @@ import User from '../models/user.model.js';
 import Message from '../models/message.model.js';
 export const getUsersForSidebar = async (req, res) => {
     try {
-        const loggedInUserId = req.user._id;
+        const loggedInUserId = req.user?._id; // Ensure req.user exists
+        if (!loggedInUserId) {
+            return res.status(400).json({ message: "User not logged in" });
+        }
+
         const filteredUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password");
-        res.status(200).json({ users: filteredUsers });
-    }
-    catch (error) {
-        console.error("Error in getting sidebar");
+        res.status(200).json(filteredUsers); // Directly send the filteredUsers array
+    } catch (error) {
+        console.error("Error in getting sidebar:", error);
         res.status(500).json({ message: "Internal server error" });
     }
-}
+};
+
 export const getMessages = async (req, res) => {
     try {
         const {id: userToChatID} = req.params;

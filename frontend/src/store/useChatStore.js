@@ -18,7 +18,6 @@ export const useChatStore = create((set) => ({
         } catch (error) {
             console.error('Error fetching users:', error); // Log error
             toast.error('Failed to fetch users');
-            set({ users: [] }); // Reset users on error
         } finally {
             set({ isUsersLoading: false });
         }
@@ -33,14 +32,14 @@ export const useChatStore = create((set) => ({
         } catch (error) {
             console.error('Error fetching messages:', error); // Log error
             toast.error('Failed to fetch messages');
-            set({ messages: [] }); // Reset messages on error
+            
         } finally {
             set({ isMessagesLoading: false });
         }
     },
 
-    setSelectedUser: (user) => {
-        console.log('Selected user:', user); // Debugging log
-        set({ selectedUser: user });
+    setSelectedUser: (selectedUser) => {
+        set({ selectedUser });
+        
     },
 }));
