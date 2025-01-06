@@ -25,11 +25,13 @@ app.use("/api/messages", messageRoutes);
 app.get("/", (req, res) => {
   res.send("Hello, MERN stack backend!");
 });
-
 // Connect to MongoDB and Start Server
 const PORT = process.env.PORT || 8000;
-connectDB().then(() => {
-  server.listen(PORT, () => {
-    console.log(`Backend server running on port ${PORT}`);
-  });
+
+server.listen(PORT, () => {
+  console.log("Socket server running on port 5001");
+  connectDB();
 });
+
+
+
