@@ -11,6 +11,9 @@ const io = new Server(server, {
         
     }
 });
+export function getReceiverSocketId(userId){
+    return userSocketMap[userId];
+}
 
 const userSocketMap = {};
 // map with user id as the key and socket id as the value
