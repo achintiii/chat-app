@@ -11,7 +11,7 @@ const MessageInput = () => {
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
-        if (!file.type.startsWith("image/")) {
+        if (file && !file.type.startsWith("image/")) {
             toast.error("Please upload an image file");
             return;
         }
@@ -20,7 +20,9 @@ const MessageInput = () => {
         reader.onload = () => {
             setImagePreview(reader.result);
         };
-        reader.readAsDataURL(file);
+        if (file) {
+            reader.readAsDataURL(file);
+        }
     };
 
     const removeImage = () => {
@@ -37,7 +39,8 @@ const MessageInput = () => {
         }
         try {
             await sendMessage({ text: text.trim(), image: imagePreview });
-            
+            console.log("Message sent successfully");
+
             // Clear form
             setText("");
             setImagePreview(null);
@@ -49,12 +52,11 @@ const MessageInput = () => {
             toast.error("Failed to send message");
         }
     };
-    
 
     const isSendDisabled = !text.trim() && !imagePreview; // Disable button if no text or image
 
     return (
-        <div className="p-4 w-full">
+        <div className="p-4 w-full border-t">
             {/* Image preview section */}
             {imagePreview && (
                 <div className="mb-3 flex items-center gap-2">
