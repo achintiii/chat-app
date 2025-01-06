@@ -6,11 +6,12 @@ import messageRoutes from "./routes/message.route.js";
 import { connectDB } from "./lib/db.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import {app, server} from './lib/socket.js';
 
 
 dotenv.config();
 
-const app = express();
+
 
 // Middleware
 app.use(express.json()); // To parse incoming JSON payloads
@@ -28,7 +29,7 @@ app.get("/", (req, res) => {
 // Connect to MongoDB and Start Server
 const PORT = process.env.PORT || 8000;
 connectDB().then(() => {
-  app.listen(PORT, () => {
+  server.listen(PORT, () => {
     console.log(`Backend server running on port ${PORT}`);
   });
 });
