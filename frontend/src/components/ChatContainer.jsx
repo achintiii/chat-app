@@ -25,7 +25,7 @@ const ChatContainer = () => {
 
     // Auto-scroll to the latest message
     useEffect(() => {
-        if (messageEndRef.current) {
+        if (messageEndRef.current && messages) {
             messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     }, [messages]);
